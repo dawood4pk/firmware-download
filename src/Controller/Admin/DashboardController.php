@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Entity\SoftwareVersion;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -31,7 +30,7 @@ final class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::section('Firmware');
-        yield MenuItem::linkToCrud('Software Versions', 'fa fa-microchip', SoftwareVersion::class);
+        yield MenuItem::linkToRoute('Software Versions', 'fa fa-microchip', 'admin_software_version_index');
         yield MenuItem::section('');
         yield MenuItem::linkToUrl('View Download Page', 'fa fa-external-link', '/carplay/software-download')
             ->setLinkTarget('_blank');
