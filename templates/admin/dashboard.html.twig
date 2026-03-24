@@ -1,0 +1,31 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block main %}
+<div style="max-width: 700px;">
+    <h2 style="font-size: 1.4rem; margin-bottom: 1rem;">Welcome to the Firmware Admin Panel</h2>
+    <p style="color: #555; line-height: 1.6; margin-bottom: 1.5rem;">
+        From here you can manage software versions for the CarPlay / Android Auto MMI firmware download page.
+        Customers visit that page, enter their current software and hardware versions, and are directed to the
+        correct firmware download link.
+    </p>
+
+    <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 16px; margin-bottom: 1.5rem;">
+        <strong>Important:</strong> Only one version per product family should be marked as
+        <em>Is Latest Version</em>. Customers already on that version will see
+        "Your system is up to date" with no download link.
+    </div>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <a href="{{ ea_url().setController('App\\EasyAdmin\\SoftwareVersionCrudController').setAction('index') }}"
+           style="display:inline-block; background:#4e73df; color:#fff; padding:10px 20px; border-radius:4px; text-decoration:none; font-weight:600;">
+            Manage Software Versions
+        </a>
+        <a href="/carplay/software-download" target="_blank"
+           style="display:inline-block; background:#1cc88a; color:#fff; padding:10px 20px; border-radius:4px; text-decoration:none; font-weight:600;">
+            View Download Page
+        </a>
+    </div>
+</div>
+{% endblock %}

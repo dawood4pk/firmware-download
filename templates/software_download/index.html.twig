@@ -1,0 +1,570 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Update the software for your CarPlay / Android Auto MMI{% endblock %}
+
+{% block stylesheets %}
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Rubik', sans-serif;
+        color: #212121;
+        background: #f5f5f5;
+        min-height: 100vh;
+    }
+
+    #software-download {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 0 16px 60px;
+    }
+
+    .section-title {
+        box-shadow: inset 2px 3px 5px rgba(0,0,0,.25), 2px 3px 5px rgba(0,0,0,.25);
+        border: 1px solid #fff;
+        border-radius: 20px;
+        padding: 24px;
+        background: #fff;
+        text-align: center;
+    }
+
+    .section-title h1 {
+        font-size: 36px;
+        line-height: 44px;
+        letter-spacing: -0.36px;
+        font-weight: 300;
+    }
+
+    .section-title h1 .bold {
+        display: block;
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+    }
+
+    .card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 32px 24px;
+        margin-top: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 12px;
+        color: #757575;
+        margin-bottom: 4px;
+        font-weight: 400;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #bdbdbd;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #212121;
+        outline: none;
+        transition: border-color .2s;
+    }
+
+    .form-group input:focus {
+        border-color: #1ca3c2;
+    }
+
+    .form-group input.error {
+        border-color: #d32f2f;
+    }
+
+    .form-group input:disabled {
+        background: #f2f2f2;
+        color: #9e9e9e;
+        cursor: not-allowed;
+    }
+
+    .field-error {
+        font-size: 11px;
+        color: #d32f2f;
+        margin-top: 3px;
+        display: none;
+    }
+
+    .field-error.visible {
+        display: block;
+    }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-check {
+        background: #1ca3c2;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 32px;
+        font-size: 14px;
+        font-family: inherit;
+        font-weight: 500;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        transition: background .2s;
+    }
+
+    .btn-check:hover {
+        background: #1591ae;
+    }
+
+    .btn-check:disabled {
+        opacity: .6;
+        cursor: default;
+    }
+
+    .tooltip-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 1px solid #9e9e9e;
+        background: transparent;
+        color: #9e9e9e;
+        font-size: 12px;
+        cursor: help;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .tooltip-icon .tooltip-text {
+        display: none;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: calc(100% + 8px);
+        width: 220px;
+        background: #212121;
+        color: #fff;
+        font-size: 12px;
+        line-height: 1.4;
+        padding: 10px 12px;
+        border-radius: 6px;
+        text-align: left;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    .tooltip-icon:hover .tooltip-text {
+        display: block;
+    }
+
+    .alert {
+        margin-top: 20px;
+        padding: 14px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        line-height: 1.5;
+        display: none;
+    }
+
+    .alert.visible { display: block; }
+
+    .alert-success {
+        background: #f6ffed;
+        border: 1px solid #b7eb8f;
+        color: #389e0d;
+    }
+
+    .alert-error {
+        background: #fff1f0;
+        border: 1px solid #ffa39e;
+        color: #cf1322;
+    }
+
+    .download-links {
+        margin-top: 8px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .download-link {
+        color: #389e0d;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        text-decoration: underline;
+    }
+
+    .what-link {
+        display: block;
+        margin-top: 16px;
+        color: #1ca3c2;
+        font-size: 14px;
+        text-decoration: underline;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .warning-box {
+        margin-top: 20px;
+        padding: 16px;
+        background: #fffbe6;
+        border: 1px solid #ffe58f;
+        border-radius: 6px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: #614700;
+    }
+
+    .warning-box strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+
+    .spinner {
+        display: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #e0e0e0;
+        border-top-color: #1ca3c2;
+        border-radius: 50%;
+        animation: spin .6s linear infinite;
+        flex-shrink: 0;
+    }
+
+    .spinner.visible { display: block; }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .footer-card {
+        margin-top: 24px;
+        text-align: center;
+    }
+
+    .btn-shop {
+        display: inline-block;
+        background: #1ca3c2;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+        padding: 10px 28px;
+        font-size: 14px;
+        font-family: inherit;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        transition: background .2s;
+    }
+
+    .btn-shop:hover { background: #1591ae; }
+
+    .footer-legal {
+        margin-top: 14px;
+        font-size: 11px;
+        color: #9e9e9e;
+        line-height: 1.5;
+    }
+
+    /* Modal */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.7);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .modal-overlay.open {
+        display: flex;
+    }
+
+    .modal-content {
+        position: relative;
+        max-width: 90vw;
+        max-height: 90vh;
+        background: #fff;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(0,0,0,.6);
+        border: none;
+        color: #fff;
+        font-size: 22px;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        line-height: 1;
+    }
+
+    .modal-content img {
+        display: block;
+        max-width: 100%;
+        max-height: 85vh;
+    }
+
+    @media (max-width: 480px) {
+        .section-title h1 { font-size: 28px; line-height: 36px; }
+        .section-title h1 .bold { font-size: 24px; }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div id="software-download">
+
+    <div class="section-title">
+        <h1>
+            <span class="bold">Update the software for your</span>
+            CarPlay / Android Auto MMI
+        </h1>
+    </div>
+
+    <div class="card">
+        <form id="check-form" novalidate>
+
+            <div class="form-group">
+                <label for="version">System Version *</label>
+                <input type="text" id="version" name="version" placeholder="Your software version">
+                <div class="field-error" id="version-error">This field is required</div>
+            </div>
+
+            <div class="form-group">
+                <label for="mcuVersion">MCU Version (not required)</label>
+                <input type="text" id="mcuVersion" name="mcuVersion" placeholder="Not Required" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="hwVersion">HW Version *</label>
+                <input type="text" id="hwVersion" name="hwVersion" placeholder="Your HW version">
+                <div class="field-error" id="hwVersion-error">This field is required</div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-check" id="submit-btn">CHECK</button>
+                <div class="spinner" id="spinner"></div>
+                <div class="tooltip-icon" tabindex="0">
+                    i
+                    <span class="tooltip-text">
+                        Enter your current software version to check if there is an update available.
+                        You can find your current software in MMI settings &rsaquo; System &rsaquo; System/firmware version.
+                    </span>
+                </div>
+            </div>
+
+            <div class="alert alert-success" id="alert-success">
+                <span id="success-msg"></span>
+                <div class="download-links" id="download-links"></div>
+            </div>
+
+            <div class="alert alert-error" id="alert-error">
+                <span id="error-msg"></span>
+            </div>
+
+        </form>
+
+        <a class="what-link" id="what-link">What is my current software?</a>
+
+        <div class="warning-box">
+            <strong>Warning!!!</strong>
+            Entering an incorrect software number and uploading it to another version of MMI will brick the MMI.<br>
+            In most cases, this is a reversible process, but impossible to perform without the assistance of our support.<br>
+            BimmerTech is not responsible for errors in software uploading by customers due to uploading the incorrect version.<br>
+            After this step, replacement under warranty cannot be considered.
+        </div>
+    </div>
+
+    <div class="footer-card">
+        <a class="btn-shop" href="https://www.bimmer-tech.net/" target="_blank">GO BACK TO THE SHOP</a>
+        <p class="footer-legal">
+            BMW and MINI are registered trademarks of Bayerische Motoren Werke AG.
+            BimmerTech is not affiliated with BMW AG in any way, and is not authorized by BMW AG
+            to act as an official distributor or representative.
+        </p>
+    </div>
+
+</div>
+
+{# Modal: "What is my current software?" #}
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-label="What is my current software?">
+    <div class="modal-content">
+        <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+        <img src="/images/mmi_software_version.jpg" alt="Where to find your software version in MMI settings">
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+(function () {
+    'use strict';
+
+    const form       = document.getElementById('check-form');
+    const submitBtn  = document.getElementById('submit-btn');
+    const spinner    = document.getElementById('spinner');
+    const versionIn  = document.getElementById('version');
+    const hwVersionIn = document.getElementById('hwVersion');
+    const versionErr  = document.getElementById('version-error');
+    const hwVersionErr = document.getElementById('hwVersion-error');
+    const alertSuccess = document.getElementById('alert-success');
+    const alertError   = document.getElementById('alert-error');
+    const successMsg   = document.getElementById('success-msg');
+    const errorMsg     = document.getElementById('error-msg');
+    const downloadLinks = document.getElementById('download-links');
+    const modal        = document.getElementById('modal');
+    const modalClose   = document.getElementById('modal-close');
+    const whatLink     = document.getElementById('what-link');
+
+    function hideAlerts() {
+        alertSuccess.classList.remove('visible');
+        alertError.classList.remove('visible');
+        downloadLinks.innerHTML = '';
+    }
+
+    function showError(msg) {
+        errorMsg.textContent = msg;
+        alertError.classList.add('visible');
+        alertSuccess.classList.remove('visible');
+    }
+
+    function showSuccess(msg, st, gd) {
+        successMsg.textContent = msg;
+        downloadLinks.innerHTML = '';
+
+        if (st) {
+            const a = document.createElement('a');
+            a.href = st;
+            a.target = '_blank';
+            a.className = 'download-link';
+            a.textContent = 'ST Version';
+            downloadLinks.appendChild(a);
+        }
+
+        if (gd) {
+            const a = document.createElement('a');
+            a.href = gd;
+            a.target = '_blank';
+            a.className = 'download-link';
+            a.textContent = 'GD Version';
+            downloadLinks.appendChild(a);
+        }
+
+        alertSuccess.classList.add('visible');
+        alertError.classList.remove('visible');
+    }
+
+    function validate() {
+        let valid = true;
+
+        if (!versionIn.value.trim()) {
+            versionIn.classList.add('error');
+            versionErr.classList.add('visible');
+            valid = false;
+        } else {
+            versionIn.classList.remove('error');
+            versionErr.classList.remove('visible');
+        }
+
+        if (!hwVersionIn.value.trim()) {
+            hwVersionIn.classList.add('error');
+            hwVersionErr.classList.add('visible');
+            valid = false;
+        } else {
+            hwVersionIn.classList.remove('error');
+            hwVersionErr.classList.remove('visible');
+        }
+
+        return valid;
+    }
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        hideAlerts();
+
+        if (!validate()) return;
+
+        submitBtn.disabled = true;
+        spinner.classList.add('visible');
+
+        const body = new URLSearchParams({
+            version:    versionIn.value.trim(),
+            hwVersion:  hwVersionIn.value.trim(),
+        });
+
+        try {
+            const res = await fetch('/api/carplay/software/version', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: body.toString(),
+            });
+
+            if (!res.ok) {
+                showError('Something went wrong. Please try again.');
+                return;
+            }
+
+            const data = await res.json();
+
+            if (data.versionExist === true) {
+                showSuccess(data.msg, data.st, data.gd);
+            } else if (data.versionExist === false) {
+                showError(data.msg || 'There was a problem identifying your software. Contact us for help.');
+            } else {
+                showError(data.msg || 'Something went wrong. Please try again.');
+            }
+
+        } catch (err) {
+            showError('Failed to fetch software details. Please try again.');
+        } finally {
+            submitBtn.disabled = false;
+            spinner.classList.remove('visible');
+        }
+    });
+
+    whatLink.addEventListener('click', function () {
+        modal.classList.add('open');
+    });
+
+    modalClose.addEventListener('click', function () {
+        modal.classList.remove('open');
+    });
+
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+            modal.classList.remove('open');
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            modal.classList.remove('open');
+        }
+    });
+}());
+</script>
+{% endblock %}
