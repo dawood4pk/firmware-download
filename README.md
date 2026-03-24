@@ -13,6 +13,7 @@ with an admin panel that lets non-technical staff manage software versions witho
 | PHP | 8.2 or higher |
 | Composer | 2.x |
 | SQLite | 3.x (default, zero-config) **or** MySQL 8.0+ / MariaDB 10.6+ |
+| EasyAdmin | 5.x (bundled via Composer) |
 
 PHP extensions required: `pdo_sqlite` (default) or `pdo_mysql`, `intl`, `mbstring`, `xml`, `ctype`, `iconv`.
 
